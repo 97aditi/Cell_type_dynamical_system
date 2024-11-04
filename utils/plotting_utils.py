@@ -42,7 +42,9 @@ def plot_and_save_parameters(A, C, Q, R, save_folder, J=None):
     plt.yticks([])
     plt.colorbar()
     plt.tight_layout()
-    plt.savefig(save_folder+'model_params.png', bbox_inches='tight', dpi=300)
+
+    if save_folder is not None:
+        plt.savefig(save_folder+'model_params.png', bbox_inches='tight', dpi=300)
     if J is not None:
         plt.figure(figsize=(6, 4))
         vmin = np.min(J)
@@ -54,5 +56,6 @@ def plot_and_save_parameters(A, C, Q, R, save_folder, J=None):
         plt.yticks([])
         plt.colorbar()
         plt.tight_layout()
-        plt.savefig(save_folder[:-4] + '_J.png', bbox_inches='tight', dpi=300)
+        if save_folder is not None:
+            plt.savefig(save_folder[:-4] + '_J.png', bbox_inches='tight', dpi=300)
         plt.show()

@@ -23,7 +23,7 @@ def learn_J_from_data(datas, N_e=0, signs=None):
             constraints = [J[:,0:N_e] >= 0, J[:,N_e:] <= 0]
         else:
             e_cells = np.where(signs==1)[0]
-            i_cells = np.where(signs==-1)[0]
+            i_cells = np.where(signs==2)[0]
             constraints = [J[:,e_cells] >= 0, J[:,i_cells] <= 0]
         # define the objective``
         objective = cp.Minimize(cp.norm(y_next_data.T - J@y_data.T, 'fro'))
@@ -42,7 +42,7 @@ def learn_J_from_data(datas, N_e=0, signs=None):
                 constraints = [J_i[0:N_e] >= 0, J_i[N_e:] <= 0]
             else:
                 e_cells = np.where(signs==1)[0]
-                i_cells = np.where(signs==-1)[0]
+                i_cells = np.where(signs==2)[0]
                 constraints = [J_i[e_cells] >= 0, J_i[i_cells] <= 0]
             # define the objective
             objective = cp.Minimize(cp.norm(y_next_data.T[i,:] - J_i@y_data.T, 'fro'))
@@ -70,9 +70,9 @@ def learn_J_from_data_multiregion(datas, signs, region_identity):
         if region_identity[i] == 0:
             # this is region 1
             e_cells_this_region = np.where((signs==1) & (region_identity==0))[0]
-            i_cells_this_region = np.where((signs==-1) & (region_identity==0))[0]
+            i_cells_this_region = np.where((signs==2) & (region_identity==0))[0]
             e_cells_other_region = np.where((signs==1) & (region_identity==1))[0]
-            i_cells_other_region = np.where((signs==-1) & (region_identity==1))[0]
+            i_cells_other_region = np.where((signs==2) & (region_identity==1))[0]
             if len(e_cells_other_region)>0:
                 constraints = [J_i[e_cells_this_region] >= 0, J_i[i_cells_this_region] <= 0, J_i[e_cells_other_region] >= 0, J_i[i_cells_other_region] == 0]
             else:
@@ -80,9 +80,9 @@ def learn_J_from_data_multiregion(datas, signs, region_identity):
         else:
             # this is region 2
             e_cells_this_region = np.where((signs==1) & (region_identity==1))[0]
-            i_cells_this_region = np.where((signs==-1) & (region_identity==1))[0]
+            i_cells_this_region = np.where((signs==2) & (region_identity==1))[0]
             e_cells_other_region = np.where((signs==1) & (region_identity==0))[0]
-            i_cells_other_region = np.where((signs==-1) & (region_identity==0))[0]
+            i_cells_other_region = np.where((signs==2) & (region_identity==0))[0]
             if len(e_cells_this_region)>0:
                 constraints = [J_i[e_cells_this_region] >= 0, J_i[i_cells_this_region] <= 0, J_i[e_cells_other_region] >= 0, J_i[i_cells_other_region] == 0]
             else:
@@ -120,17 +120,20 @@ def obtain_params_nnmf_init(seed, datas, signs, rank_e, rank_i):
 
 def reconstruct_multiregion_J_nnmf(seed, J, signs, region_identity, rank_e, rank_i):
     ''' perform NNMF on J for region and each cell type separately'''
+
+    assert len(np.unique(signs)) == 2, "Only E and I cell classes are supported"
     # extract rows of J corresponding to region 1 and signs 1
     e_cells_region_1 = np.where((signs==1) & (region_identity==0))[0]
     e_cells_region_2 = np.where((signs==1) & (region_identity==1))[0]
-    i_cells_region_1 = np.where((signs==-1) & (region_identity==0))[0]
-    i_cells_region_2 = np.where((signs==-1) & (region_identity==1))[0]
+    i_cells_region_1 = np.where((signs==2) & (region_identity==0))[0]
+    i_cells_region_2 = np.where((signs==2) & (region_identity==1))[0]
 
     J_1_e = np.abs(J[e_cells_region_1,:])
     if len(e_cells_region_2)>0:
         J_2_e = np.abs(J[e_cells_region_2,:])
     J_1_i = np.abs(J[i_cells_region_1,:])
     J_2_i = np.abs(J[i_cells_region_2,:])
+
 
     # let's run NNMF on each of these matrices
     # let's do multiple runs
@@ -317,9 +320,12 @@ def reconstruct_J_nnmf(seed, J, N_e, N_i, rank_e, rank_i, signs=None):
         J_lower = J[N_e:,:]
     else:
         e_cells = np.where(signs==1)[0]
-        i_cells = np.where(signs==-1)[0]
+        i_cells = np.where(signs==2)[0]
         J_upper = J[e_cells,:]
         J_lower = J[i_cells,:]
+
+    # check that there are only two cell classes
+    assert len(np.unique(signs)) == 2, "Only E and I cell classes are supported"
         
     # make it positive 
     J_upper_positive = np.abs(J_upper)
