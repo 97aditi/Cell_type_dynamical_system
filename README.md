@@ -4,17 +4,15 @@ This is the code repository for cell-type specific linear dynamical systems, bas
 
 
 #### Setup instructions:
-This is built on top of the [SSM package](https://github.com/lindermanlab/ssm/tree/master/ssm). 
-
+1. Clone the repository with submodules.
+``` git clone --recurse-submodules https://github.com/yourusername/your-repo-name.git
+    cd Cell_type_dynamical_system
 ```
-conda env create --file=ctds.yml
-conda activate ctds
-cd ssm
-pip install -e .
+2. Run the setup script:
+``` bash setup.sh
 ```
-
-We also use MOSEK to solve constrained optimization, under the hood. This requires access to a license file that is free for academics. Please follow the instructions [here](https://docs.mosek.com/10.2/licensing/quickstart.html#i-don-t-have-a-license-file-yet) to download the lic file and save it in your home directory as described (/Users/myusername/mosek/mosek.lic for OSX).
-
+3.  Follow the prompts to set up your MOSEK license.
+You're now ready to use the project!
 
 #### Demo script
 fit_ctds_on_simulated_data.ipynb describes how to create and fit a CTDS model to simulated data.
