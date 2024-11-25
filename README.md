@@ -6,7 +6,7 @@ This is the code repository for cell-type specific linear dynamical systems, bas
 #### Setup instructions:
 1. Clone the repository with submodules.
 ``` 
-    git clone --recurse-submodules https://github.com/yourusername/your-repo-name.git
+    git clone --recurse-submodules https://github.com/97aditi/Cell_type_dynamical_system.git
     cd Cell_type_dynamical_system
 ```
 2. Run the setup script:
