@@ -15,7 +15,7 @@ conda activate ctds
 
 # Install SSM package
 cd ssm
-pip install -e .
+pip install -e . --no-build-isolation
 cd ..
 
 # Remind about MOSEK license
