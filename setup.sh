@@ -1,4 +1,4 @@
-#!/bin/bash
+]#!/bin/bash
 
 # Check if Conda is installed
 if ! command -v conda &> /dev/null
@@ -8,6 +8,8 @@ then
     echo "After installing Conda, restart your terminal and run this script again."
     exit 1
 fi
+
+source "$(conda info --base)/etc/profile.d/conda.sh"
 
 # Create and activate the Conda environment
 conda env create -f ctds.yml
@@ -28,3 +30,4 @@ echo "- Linux: /home/[username]/mosek/mosek.lic"
 echo "- Windows: C:\Users\[username]\mosek\mosek.lic"
 echo "================================================================"
 echo "Setup complete! You can now use the project."
+
